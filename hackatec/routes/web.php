@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,7 +13,18 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', function () {
-    return view('welcome');
-});
+//Ruta '/Login', Peticion GET, Linkeada con la funcion index del controlador Login
+Route::get('/login',[LoginController::class,'index']);
+//Ruta '/Login', Petición POST, lineada a la funcion store del controlador Login
+// Se le pone el nombre login para hacer llamadas a esta ruta de manera más sencilla
+Route::post('/login',[LoginController::class,'store'])->name('login');
+//Ruta '/login/2' se mostrará el código a ingresar en telegram y habrá espacio para llenar con el código que arroje telegram
+Route::post('/login/2',[LoginController::class,'NIP'])->name('NIP');
+Route::get('/logout',[LoginController::class,'logout'])->name('logout');
+Route::get('/',function(){
+	if(session('id')){
+		return view('home');
+	}else{
+		return redirect('/login');
+	}
+})->name('home');
