@@ -118,6 +118,24 @@ class Login extends Model
     		return 'false';
     	}
     }
+    public static function modificarNIP1($correo){
+        $nip = self::NIP();
+        $id = self::select('cuenta.id as id')
+                    ->where([
+                        ['cuenta.correo','=',$correo]
+                    ])
+                    ->get();
+        $id = $id->toArray();
+        $id = $id[0]['id'];
+        $datos = self::find($id);
+        $datos->ca_1 = $nip;
+        $datos->save();
+        if($datos->save()){
+            return $nip;
+        }else{
+            return 'false';
+        }
+    }
 
     public static function obtenerChatID($correo){
     	$chat_id = self::select('cuenta.chat_id as chat_id')

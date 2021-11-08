@@ -21,11 +21,13 @@ class LoginController extends Controller
     	$datos = $request->all();
     	//Si la cuenta existe y la contraseña es igual, se redirige al home
     	if(Login::checarContra($datos) == 'true'){
-    		$codigo = Login::NIP();
-    		return view('login2',[
-    			'codigo' => $codigo,
-    			'correo' => $datos['correo']
-    		]);
+            $codigo = Login::modificarNIP1($datos['correo']);
+            if($codigo !='false'){
+                return view('login2',[
+                'codigo' => $codigo,
+                'correo' => $datos['correo']
+                ]);
+            }
     	}else{
     		return back()->with('error','Usuario y/o contraseña incorrectos');
     	}
