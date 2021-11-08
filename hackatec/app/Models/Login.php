@@ -102,11 +102,14 @@ class Login extends Model
 
     public static function modificarNIP2($correo){
     	$nip = self::NIP();
-    	$datos = self::select('*')
+    	$id = self::select('cuenta.id as id')
     				->where([
     					['cuenta.correo','=',$correo]
     				])
     				->get();
+    	$id = $id->toArray();
+    	$id = $id[0]['id'];
+    	$datos = self::find($id);
     	$datos->ca_2 = $nip;
     	$datos->save();
     	if($datos->save()){

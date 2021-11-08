@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Login;
+use Illuminate\Support\Facades\Http;
 
 class TelegramController extends Controller
 {
@@ -29,17 +30,22 @@ class TelegramController extends Controller
         $data = $request->all();
         $mensaje = $data['message']['text'];
         $separados = explode(" ", $mensaje);
-        //$chat_id_sender = $data['message']['chat']['id'];
-        $chat_id = obtenerChatID($separados[0]);
+        $chat_id = Login::obtenerChatID($separados[0]);
         if(Login::verificarNIP1($separados[1],$separados[0]) == 'true'){
             $pin2 = Login::modificarNIP2($separados[0]);
-            if($response !='false'){
+            if($pin2 !='false'){
                 $response2 = Http::post(env('APPI').'sendMessage',[
                 'chat_id'=>$chat_id,
                 'text'=> $pin2
             ]);
             }
+        }else{
+            $response2 = Http::post(env('APPI').'sendMessage',[
+                'chat_id'=>$chat_id,
+                'text'=> "Código Incorrecto"
+            ]);
         }
+        return true;
     }
 
     /**

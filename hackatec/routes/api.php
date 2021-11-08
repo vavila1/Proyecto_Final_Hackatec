@@ -19,4 +19,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/telegram',[TelegramController::class,'store'])->name('telegram');
+Route::post('/2026820651:AAGDMiAqq4nR1w81dLPU7AnB6Ee8QuLJxCA',[TelegramController::class,'store'])->name('telegram');
