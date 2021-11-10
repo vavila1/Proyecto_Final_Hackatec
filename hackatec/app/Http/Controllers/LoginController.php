@@ -43,6 +43,7 @@ class LoginController extends Controller
     public function NIP(Request $request){
     	$datos = $request->all();
     	if(Login::verificarNIP2($datos['ca_2'],$datos['correo']) == 'true'){
+            $limpiar_nips = Login::limpiarNIPS($datos['correo']);
     		Login::crear_sesion($datos['correo']);
     		return redirect('/');
     	}else{

@@ -82,10 +82,10 @@ class Login extends Model
     		return 'false';
     	}
     }
-    public static function verificarNIP1($NIP,$correo){
+    public static function verificarNIP1($NIP,$chat_id){
     	$nip = self::select('cuenta.ca_1 as ca_1')
     				->where([
-    					['cuenta.correo','=',$correo]
+    					['cuenta.chat_id','=',$chat_id]
     				])
     				->get();
     	$nip = $nip->toArray();
@@ -100,11 +100,11 @@ class Login extends Model
     	}
     }
 
-    public static function modificarNIP2($correo){
+    public static function modificarNIP2($chat_id){
     	$nip = self::NIP();
     	$id = self::select('cuenta.id as id')
     				->where([
-    					['cuenta.correo','=',$correo]
+    					['cuenta.chat_id','=',$chat_id]
     				])
     				->get();
     	$id = $id->toArray();
@@ -117,6 +117,26 @@ class Login extends Model
     	}else{
     		return 'false';
     	}
+    }
+
+    //Este se usa únicamente para el registro
+    public static function modificarNIP2R($correo){
+        $nip = self::NIP();
+        $id = self::select('cuenta.id as id')
+                    ->where([
+                        ['cuenta.correo','=',$correo]
+                    ])
+                    ->get();
+        $id = $id->toArray();
+        $id = $id[0]['id'];
+        $datos = self::find($id);
+        $datos->ca_2 = $nip;
+        $datos->save();
+        if($datos->save()){
+            return $nip;
+        }else{
+            return 'false';
+        }
     }
     public static function modificarNIP1($correo){
         $nip = self::NIP();
@@ -134,6 +154,40 @@ class Login extends Model
             return $nip;
         }else{
             return 'false';
+        }
+    }
+
+    public static function limpiarNIPS($correo){
+        $nip = self::NIP();
+        $id = self::select('cuenta.id as id')
+                    ->where([
+                        ['cuenta.correo','=',$correo]
+                    ])
+                    ->get();
+        $id = $id->toArray();
+        $id = $id[0]['id'];
+        $datos = self::find($id);
+        $datos->ca_1 = null;
+        $datos->ca_2 = null;
+        $datos->save();
+        if($datos->save()){
+            return 'true';
+        }else{
+            return 'false';
+        }
+    }
+
+    public static function validarChatID($chat_id){
+        $validacion = self::select('cuenta.chat_id as chat_id')
+                    ->where([
+                        ['cuenta.chat_id','=',$chat_id]
+                    ])
+                    ->get();
+        $validacion = $validacion->toArray();
+        if($validacion==null){
+            return 'false';
+        }else{
+            return 'true';
         }
     }
 

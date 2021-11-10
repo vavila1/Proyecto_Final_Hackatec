@@ -27,23 +27,56 @@ class TelegramController extends Controller
     public function store(Request $request)
     {
         //
-        $data = $request->all();
+        /*$data = $request->all();
         $mensaje = $data['message']['text'];
         $separados = explode(" ", $mensaje);
         $chat_id = Login::obtenerChatID($separados[0]);
-        if(Login::verificarNIP1($separados[1],$separados[0]) == 'true'){
-            $pin2 = Login::modificarNIP2($separados[0]);
-            if($pin2 !='false'){
+        $chat_id_sender = $data['message']['chat']['id'];
+        if(sizeof($separados) > 1){
+            if(Login::verificarNIP1($separados[1],$separados[0]) == 'true'){
+                $pin2 = Login::modificarNIP2($separados[0]);
+                if($pin2 !='false'){
+                    $response2 = Http::post(env('APPI').'sendMessage',[
+                    'chat_id'=>$chat_id,
+                    'text'=> $pin2
+                ]);
+                }
+            }else{
                 $response2 = Http::post(env('APPI').'sendMessage',[
-                'chat_id'=>$chat_id,
-                'text'=> $pin2
-            ]);
+                    'chat_id'=>$chat_id_sender,
+                    'text'=> "C贸digo Incorrecto"
+                ]);
             }
         }else{
             $response2 = Http::post(env('APPI').'sendMessage',[
-                'chat_id'=>$chat_id,
-                'text'=> "Código Incorrecto"
-            ]);
+                    'chat_id'=>$chat_id_sender,
+                    'text'=> 'Recuerda que tienes que mandar tu correo junto con el codigo de acceso'."\n".'Ejemplo'."\n".'correo@gmail.com 123456'
+                ]);
+        }*/
+        $data = $request->all();
+        $chat_id_sender = $data['message']['chat']['id'];
+        $mensaje = $data['message']['text'];
+        $val = Login::validarChatID($chat_id_sender);
+        if(Login::validarChatID($chat_id_sender) == 'true'){
+            if(Login::verificarNIP1($mensaje,$chat_id_sender) == 'true'){
+                $pin2 = Login::modificarNIP2($chat_id_sender);
+                if($pin2 !='false'){
+                    $response2 = Http::post(env('APPI').'sendMessage',[
+                    'chat_id'=>$chat_id_sender,
+                    'text'=> $pin2
+                ]);
+                }
+            }else{
+                $response2 = Http::post(env('APPI').'sendMessage',[
+                    'chat_id'=>$chat_id_sender,
+                    'text'=> "C贸digo Incorrecto"
+                ]);
+            }
+        }else{
+            $response2 = Http::post(env('APPI').'sendMessage',[
+                    'chat_id'=>$chat_id_sender,
+                    'text'=> 'Te tienes que registrar'
+                ]);
         }
         return true;
     }
