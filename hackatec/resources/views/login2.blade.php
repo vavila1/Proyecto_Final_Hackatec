@@ -49,6 +49,7 @@
                                                 id="exampleInputEmail" aria-describedby="emailHelp"
                                                 placeholder="{{$correo}}" name="correo"  value="{{$correo}}" readonly>
                                         </div>
+                                        @if(empty($registro))
                                     	<p>Ingresa el siguiente código en telegram.</p>
                                         <div class="form-group">
                                             <input type="text" class="form-control form-control-user"
@@ -67,6 +68,27 @@
                                                     Me</label>
                                             </div>
                                         </div>
+                                        @else
+                                            <p>Ingresa el siguiente código en telegram antecedido por tu correo eléctrónico</p>
+                                            <p>ejemplo@ejemplo.com 123456</p>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control form-control-user"
+                                                    id="exampleInputEmail" aria-describedby="emailHelp"
+                                                    placeholder="{{$codigo}}" disabled>
+                                            </div>
+                                            <p>Posteriormente ingresa el código de respuesta obtenido en telegram</p>
+                                            <div class="form-group">
+                                                <input type="password" class="form-control form-control-user"
+                                                    id="c_t" placeholder="Código de Telegram" name="ca_2">
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="custom-control custom-checkbox small" hidden>
+                                                    <input type="checkbox" class="custom-control-input" id="customCheck">
+                                                    <label class="custom-control-label" for="customCheck">Remember
+                                                        Me</label>
+                                                </div>
+                                            </div>
+                                        @endif
                                         <button class="btn btn-primary btn-user btn-block" type="submit">
                                             Login
                                         </button>

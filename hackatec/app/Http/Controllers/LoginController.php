@@ -50,4 +50,24 @@ class LoginController extends Controller
     		return redirect('/login')->with('error','Código Incorrecto');
     	}
     }
+
+    public function show_r(){
+        return view('registrar');
+    }
+    public function post_r(Request $request){
+        $datos = $request->all();
+        $conf = Login::registrarCuenta($datos);
+        if($conf == 'true'){
+            $codigo = Login::modificarNIP1($datos['correo']);
+            if($codigo !='false'){
+                return view('login2',[
+                'codigo' => $codigo,
+                'correo' => $datos['correo'],
+                'registro' => 1
+                ]);
+            }
+        }else{
+            return redirect('/registro');
+        }
+    }
 }

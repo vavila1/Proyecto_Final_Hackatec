@@ -28,3 +28,5 @@ Route::get('/',function(){
 		return redirect('/login');
 	}
 })->name('home');
+Route::get('/registro',[LoginController::class,'show_r'])->name('show_r');
+Route::post('/registro',[LoginController::class,'post_r'])->name('post_r');

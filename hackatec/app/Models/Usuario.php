@@ -27,4 +27,13 @@ class Usuario extends Model
          }
          return $response;
     }
+
+    public static function obtenerUltimo(){
+       $ultimo = self::select('usuario.id as id')
+                ->orderByDesc('usuario.id')
+                ->get();
+        $ultimo = $ultimo->toArray();
+        $ultimo = $ultimo[0]['id'];
+        return $ultimo;
+    }
 }

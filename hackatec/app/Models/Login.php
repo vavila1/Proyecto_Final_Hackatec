@@ -4,7 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use App\Models\Usuario;
 
 class Login extends Model
 {
@@ -203,5 +205,27 @@ class Login extends Model
     	}else{
     		return 'false';
     	}
+    }
+
+    public static function registrarCuenta($data){
+        $usuario = new Usuario;
+        $cuenta = new Login;
+        DB::beginTransaction();
+        $usuario->nombre = $data['nombre'];
+        $usuario->apellido = $data['apellido'];
+        $usuario->save();
+        $ultimo = Usuario::obtenerUltimo();
+        $cuenta->correo = $data['correo'];
+        $cuenta->contra = $data['contra'];
+        $cuenta->id_estatus = 2;
+        $cuenta->id_usuario = $ultimo;
+        $cuenta->save();
+        if($cuenta->save() == true && $usuario->save() == true){
+            DB::commit();
+            return 'true';
+        }else{
+            DB::rollBack();
+            return 'false';
+        }
     }
 }
