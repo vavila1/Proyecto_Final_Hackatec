@@ -56,18 +56,30 @@ class LoginController extends Controller
     }
     public function post_r(Request $request){
         $datos = $request->all();
-        $conf = Login::registrarCuenta($datos);
-        if($conf == 'true'){
-            $codigo = Login::modificarNIP1($datos['correo']);
-            if($codigo !='false'){
-                return view('login2',[
-                'codigo' => $codigo,
-                'correo' => $datos['correo'],
-                'registro' => 1
-                ]);
+        $vc = Login::checarCuenta($datos['correo']);
+        if( $vc == 'false'){
+            $conf = Login::registrarCuenta($datos);
+            if($conf == 'true'){
+                $codigo = Login::modificarNIP1($datos['correo']);
+                if($codigo !='false'){
+                    return view('login2',[
+                    'codigo' => $codigo,
+                    'correo' => $datos['correo'],
+                    'registro' => 1
+                    ]);
+                }
+            }else{
+                return redirect('/registro');
             }
-        }else{
-            return redirect('/registro');
+        }else if($vc == 1){
+            $codigo = Login::modificarNIP1($datos['correo']);
+            return view('login2',[
+                    'codigo' => $codigo,
+                    'correo' => $datos['correo'],
+                    'registro' => 1
+                    ]);
+        }else if($vc == 2){
+            return redirect('/login');
         }
     }
 }

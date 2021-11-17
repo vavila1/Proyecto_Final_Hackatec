@@ -73,10 +73,19 @@ class TelegramController extends Controller
                 ]);
             }
         }else{
-            $response2 = Http::post(env('APPI').'sendMessage',[
-                    'chat_id'=>$chat_id_sender,
-                    'text'=> 'Te tienes que registrar'
-                ]);
+            $separados = explode(" ", $mensaje);
+            if(sizeof($separados) > 1){
+                $res = Login::vincularTelegram($separados[0],$chat_id_sender,$separados[1]);
+                if($res == 'true'){
+                    $pin2 = Login::modificarNIP2($chat_id_sender);
+                    if($pin2 !='false'){
+                        $response2 = Http::post(env('APPI').'sendMessage',[
+                        'chat_id'=>$chat_id_sender,
+                        'text'=> $pin2
+                    ]);
+                    }
+                }
+            }
         }
         return true;
     }

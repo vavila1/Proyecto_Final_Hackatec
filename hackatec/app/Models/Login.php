@@ -207,6 +207,45 @@ class Login extends Model
     	}
     }
 
+    public static function checarCuenta($correo){
+        //$correo = $data['correo'];
+        $cuenta = self::select('cuenta.id_estatus')
+                    ->where([
+                        ['cuenta.correo','=',$correo]
+                    ])
+                    ->get();
+        $cuenta = $cuenta->toArray();
+        if($cuenta == null){
+            return 'false';
+        }
+        return $cuenta[0]['id_estatus'];
+    }
+
+    public static function vincularTelegram($correo,$chat_id,$nip){
+        $cuenta = self::select('cuenta.id')
+                    ->where([
+                        ['cuenta.correo','=',$correo]
+                    ])
+                    ->get();
+        $cuenta = $cuenta->toArray();
+        if($cuenta==null){
+            return 'false';
+        }
+        $cuenta = $cuenta[0]['id'];
+        $cuenta = Login::find($cuenta);
+        if($cuenta->ca_1 == $nip){
+            $cuenta->chat_id = $chat_id;
+            $cuenta->id_estatus = 2;
+            $cuenta->save();
+            if($cuenta->save()){
+                return 'true';
+            }
+        }else{
+            return 'false';
+        }
+
+    }
+
     public static function registrarCuenta($data){
         $usuario = new Usuario;
         $cuenta = new Login;
