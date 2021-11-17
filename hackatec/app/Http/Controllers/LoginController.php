@@ -42,13 +42,36 @@ class LoginController extends Controller
 
     public function NIP(Request $request){
     	$datos = $request->all();
-    	if(Login::verificarNIP2($datos['ca_2'],$datos['correo']) == 'true'){
-            $limpiar_nips = Login::limpiarNIPS($datos['correo']);
-    		Login::crear_sesion($datos['correo']);
-    		return redirect('/');
-    	}else{
-    		return redirect('/login')->with('error','Código Incorrecto');
-    	}
+        if(isset($datos['ca_2'])){
+            if(Login::verificarNIP2($datos['ca_2'],$datos['correo']) == 'true'){
+                $limpiar_nips = Login::limpiarNIPS($datos['correo']);
+                Login::crear_sesion($datos['correo']);
+                return redirect('/');
+            }else{
+                return redirect('/login')->with('error','Código Incorrecto');
+            }
+        }else{
+            if(isset($datos['registro'])){
+                $codigo = Login::modificarNIP1($datos['correo']);
+                if($codigo !='false'){
+                    return view('login2',[
+                    'codigo' => $codigo,
+                    'correo' => $datos['correo'],
+                    'registro' => 1,
+                    'error' => 'Debes ingresar el código proporcionado por el bot en Telegram',
+                    ]);
+                }
+            }else{
+                $codigo = Login::modificarNIP1($datos['correo']);
+                if($codigo !='false'){
+                    return view('login2',[
+                    'codigo' => $codigo,
+                    'correo' => $datos['correo'],
+                    'error' => 'Debes ingresar el código proporcionado por el bot en Telegram',
+                    ]);
+                }
+            }
+        }
     }
 
     public function show_r(){

@@ -40,6 +40,9 @@
                                 <div class="p-5">
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">Autenticación</h1>
+                                        @if(!empty($error))
+                                        <p style="color:rgb(187, 9, 9)">*{{$error}}</p>
+                                        @endif
                                     </div>
                                     
                                     <form class="user" method="POST" action="{{route('NIP')}}">
@@ -69,7 +72,7 @@
                                             </div>
                                         </div>
                                         @else
-                                            <p>Ingresa el siguiente código en telegram antecedido por tu correo eléctrónico</p>
+                                            <p>Manda el código a continuación al bot en Telegram <a href="https://t.me/hackatec_bot">@hackatec_bot</a> antecedido por tu correo eléctrónico. Así como se ve en el siguiente Ejemplo</p>
                                             <p>ejemplo@ejemplo.com 123456</p>
                                             <div class="form-group">
                                                 <input type="text" class="form-control form-control-user"
@@ -88,6 +91,7 @@
                                                         Me</label>
                                                 </div>
                                             </div>
+                                            <input type="number" value="1" hidden name="registro">
                                         @endif
                                         <button class="btn btn-primary btn-user btn-block" type="submit">
                                             Login

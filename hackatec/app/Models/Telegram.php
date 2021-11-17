@@ -9,5 +9,9 @@ class Telegram extends Model
 {
     use HasFactory;
 
+    public static function prueba(){
+    	
+    }
+
     
 }

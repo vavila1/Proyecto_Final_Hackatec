@@ -256,7 +256,7 @@ class Login extends Model
         $ultimo = Usuario::obtenerUltimo();
         $cuenta->correo = $data['correo'];
         $cuenta->contra = $data['contra'];
-        $cuenta->id_estatus = 2;
+        $cuenta->id_estatus = 1;
         $cuenta->id_usuario = $ultimo;
         $cuenta->save();
         if($cuenta->save() == true && $usuario->save() == true){
