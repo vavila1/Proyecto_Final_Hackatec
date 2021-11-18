@@ -35,6 +35,11 @@
                         <div class="p-5">
                             <div class="text-center">
                                 <h1 class="h4 text-gray-900 mb-4">¡Registrate!</h1>
+                                @if ($errors->any())
+                                        @foreach ($errors->all() as $error)
+                                            <p style="color:rgb(187, 9, 9)">*{{ $error }}</p>
+                                        @endforeach    
+                                @endif
                             </div>
                             <form class="user" method="POST" action="{{route('post_r')}}">
                                 @csrf

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Usuario;
+use Illuminate\Support\Facades\Hash;
 
 class Login extends Model
 {
@@ -23,16 +24,17 @@ class Login extends Model
     $response = $datos_cuenta->toArray();
     //Si la consulta trae un arreglo nulo,no hay ninguna cuenta registrada con ese correo por lo tanto se regresa un false
     if($response == null){
-    	return 'false';
+    	return false;
     }
     //Se obtiene la contraseña
     $response = $response[0]['contra'];
     //Si la contraseña es igual a la registrada, se retorna true, sino, se retorna false
-    if($datos['contra'] == $response){
-    	return 'true';
+    /*if($datos['contra'] == $response){
+    	return true;
     }else{
-    	return 'false';
-    }
+    	return false;
+    }*/
+    return Login::descifradoContras($datos['contra'],$response);
    }
 
    //Función para crear la sesión con los datos siguientes: id de la cuenta, el nombre del usuario y la contraseña.
@@ -249,13 +251,14 @@ class Login extends Model
     public static function registrarCuenta($data){
         $usuario = new Usuario;
         $cuenta = new Login;
+        $contra_en = Login::cifradoContras($data['contra']);
         DB::beginTransaction();
         $usuario->nombre = $data['nombre'];
         $usuario->apellido = $data['apellido'];
         $usuario->save();
         $ultimo = Usuario::obtenerUltimo();
         $cuenta->correo = $data['correo'];
-        $cuenta->contra = $data['contra'];
+        $cuenta->contra = $contra_en;
         $cuenta->id_estatus = 1;
         $cuenta->id_usuario = $ultimo;
         $cuenta->save();
@@ -265,6 +268,26 @@ class Login extends Model
         }else{
             DB::rollBack();
             return 'false';
+        }
+    }
+
+    public static function cifradoContras($contra){
+        $contra = Hash::make($contra);
+        $inivec = openssl_random_pseudo_bytes(openssl_cipher_iv_length('AES-256-CBC'));
+        $llave = env('LLAVE_CONTRA');
+        $contra_en = openssl_encrypt($contra,'AES-256-CBC',$llave,0,$inivec);
+        return base64_encode($contra_en.'::'.$inivec);
+        return $contra;
+    }
+
+    public static function descifradoContras($contra,$contra_en){
+        $contra_des = base64_decode($contra_en);
+        $arr = explode('::',$contra_des);
+        $contra_des = openssl_decrypt($arr[0],'AES-256-CBC',env('LLAVE_CONTRA'),0,$arr[1]);
+        if(Hash::check($contra,$contra_des)){
+            return true;
+        }else{
+            return false;
         }
     }
 }

@@ -17,7 +17,7 @@ class Cuenta extends Migration
         Schema::create('cuenta', function (Blueprint $table) {
             $table->id();
             $table->string('correo',100);
-            $table->string('contra',100);
+            $table->string('contra',300);
             $table->mediumInteger('r_codigo')->nullable();
             $table->mediumInteger('ca_1')->nullable();
             $table->mediumInteger('ca_2')->nullable();

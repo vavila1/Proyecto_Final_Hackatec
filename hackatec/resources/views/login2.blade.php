@@ -40,9 +40,9 @@
                                 <div class="p-5">
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">Autenticación</h1>
-                                        @if(!empty($error))
+                                    @if(!empty($error))
                                         <p style="color:rgb(187, 9, 9)">*{{$error}}</p>
-                                        @endif
+                                    @endif
                                     </div>
                                     
                                     <form class="user" method="POST" action="{{route('NIP')}}">

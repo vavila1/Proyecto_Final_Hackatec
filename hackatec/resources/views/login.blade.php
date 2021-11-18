@@ -41,8 +41,10 @@
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">¡Bienvenido!</h1>
                                     </div>
-                                    @if(session('error'))
-                                    <p style="color:rgb(187, 9, 9)">*{{session('error')}}</p>
+                                    @if ($errors->any())
+                                        @foreach ($errors->all() as $error)
+                                            <p style="color:rgb(187, 9, 9)">*{{ $error }}</p>
+                                        @endforeach    
                                     @endif
                                     <form class="user" method="POST" action="{{route('login')}}">
                                     	@csrf
