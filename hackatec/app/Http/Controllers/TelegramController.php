@@ -69,7 +69,7 @@ class TelegramController extends Controller
             }else{
                 $response2 = Http::post(env('APPI').'sendMessage',[
                     'chat_id'=>$chat_id_sender,
-                    'text'=> "C贸digo Incorrecto"
+                    'text'=> "Código Incorrecto"
                 ]);
             }
         }else{
@@ -84,6 +84,11 @@ class TelegramController extends Controller
                         'text'=> $pin2
                     ]);
                     }
+                }else{
+                    $response2 = Http::post(env('APPI').'sendMessage',[
+                        'chat_id'=>$chat_id_sender,
+                        'text'=> 'Código Incorrecto',
+                    ]);
                 }
             }
         }

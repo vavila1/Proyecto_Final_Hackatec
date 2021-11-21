@@ -18,11 +18,11 @@ class Cuenta extends Migration
             $table->id();
             $table->string('correo',100);
             $table->string('contra',300);
-            $table->mediumInteger('r_codigo')->nullable();
-            $table->mediumInteger('ca_1')->nullable();
-            $table->mediumInteger('ca_2')->nullable();
+            $table->string('ca_1',10)->nullable();
+            $table->string('time_stamp1',20)->nullable();
+            $table->string('ca_2',10)->nullable();
+             $table->string('time_stamp2',20)->nullable();
             $table->Integer('chat_id')->nullable();
-            $table->string('path_foto',200)->nullable();
             $table->unsignedBigInteger('id_estatus');
             $table->foreign('id_estatus')->references('id')->on('estatus');
             $table->unsignedBigInteger('id_usuario');

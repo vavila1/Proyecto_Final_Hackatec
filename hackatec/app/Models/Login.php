@@ -60,11 +60,7 @@ class Login extends Model
     public static function NIP(){
     	$pin = '';
     	for($i = 0;$i<6;$i++){
-    		if($i == 0){
-    			$pin.=random_int(1,9);
-    		}else{
-    			$pin.=random_int(0,9);
-    		}
+            $pin.=random_int(0,9);
     	}
     	return $pin;
     }
