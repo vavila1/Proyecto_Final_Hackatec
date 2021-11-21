@@ -16,8 +16,8 @@ class DatabaseSeeder extends Seeder
         // \App\Models\User::factory(10)->create();
         $this->call([
         	Estatus::class,
-            Usuario::class,
-        	Cuenta::class,
+            //Usuario::class,
+        	//Cuenta::class,
         ]);
     }
 }

@@ -105,7 +105,7 @@ class LoginController extends Controller
                 'nombre' => 'required|alpha',
                 'apellido' => 'required|alpha',
                 'correo' => 'required|email',
-                'contra' => 'required|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$%&@!])[A-Za-z\d@$!%*?&]{16,}$/',
+                'contra' => 'required|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$%&@!])[A-Za-z\d#$%&@!]{16,}$/',
             ],
             //messages
             [
