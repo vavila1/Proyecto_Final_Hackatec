@@ -61,12 +61,32 @@ class LoginController extends Controller
     public function NIP(Request $request){
     	$datos = $request->all();
         if(isset($datos['ca_2'])){
-            if(Login::verificarNIP2($datos['ca_2'],$datos['correo']) == 'true'){
-                $limpiar_nips = Login::limpiarNIPS($datos['correo']);
-                Login::crear_sesion($datos['correo']);
-                return redirect('/');
+            if(isset($datos['registro'])){
+                if(Login::verificarNIP2($datos['ca_2'],$datos['correo']) == 'true'){
+                    $limpiar_nips = Login::limpiarNIPS($datos['correo']);
+                    Login::crear_sesion($datos['correo']);
+                    return redirect('/');
+                }else{
+                    $limpiar_nips = Login::limpiarNIPS($datos['correo']);
+                    $codigo = Login::modificarNIP1($datos['correo']);
+                    if($codigo !='false'){
+                        return view('login2',[
+                        'codigo' => $codigo,
+                        'correo' => $datos['correo'],
+                        'registro' => 1,
+                        'error' => 'Código Incorrecto',
+                        ]);
+                    }
+                }
             }else{
-                return redirect('/login')->with('error','Código Incorrecto');
+                if(Login::verificarNIP2($datos['ca_2'],$datos['correo']) == 'true'){
+                    $limpiar_nips = Login::limpiarNIPS($datos['correo']);
+                    Login::crear_sesion($datos['correo']);
+                    return redirect('/');
+                }else{
+                    $limpiar_nips = Login::limpiarNIPS($datos['correo']);
+                    return redirect('/login')->with('error','Código Incorrecto');
+                }
             }
         }else{
             if(isset($datos['registro'])){
@@ -102,8 +122,8 @@ class LoginController extends Controller
             //rules
             [
 
-                'nombre' => 'required|alpha',
-                'apellido' => 'required|alpha',
+                'nombre' => 'required|regex:/^([A-Za-z ÁáÉéÍíÓóÚúÜü]){1,}$/',
+                'apellido' => 'required|regex:/^([A-Za-z ÁáÉéÍíÓóÚúÜü]){1,}$/',
                 'correo' => 'required|email',
                 'contra' => 'required|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$%&@!])[A-Za-z\d#$%&@!]{16,}$/',
             ],
@@ -115,8 +135,8 @@ class LoginController extends Controller
                 'contra.regex' => 'La contraseña debe ser al menos de 16 caracteres, contener al menos una letra mayúscula, una letra minúscula, un número y uno de los siguientes caracteres especiales: #,$,%,&,@,!',
                 'nombre.required' => 'Debes ingresar tu nombre',
                 'apellido.required' => 'Debes ingresar tu apellido',
-                'nombre.alpha' => 'Tu nombre solo debe contener letras',
-                'apellido.alpha' => 'Tu apellido solo debe contener letras',
+                'nombre.regex' => 'Tu nombre solo debe contener letras',
+                'apellido.regex' => 'Tu apellido solo debe contener letras',
             ]
         );
         //Lógica que checa si hay alguna falla. Y en caso de haber, se redirige al registro con los errores.
