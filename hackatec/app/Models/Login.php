@@ -83,6 +83,7 @@ class Login extends Model
     	}
     }
     public static function verificarNIP1($NIP,$chat_id){
+        $chat_id = Login::cifradoCHATID($chat_id);
     	$nip = self::select('cuenta.ca_1 as ca_1')
     				->where([
     					['cuenta.chat_id','=',$chat_id]
@@ -101,6 +102,7 @@ class Login extends Model
     }
 
     public static function modificarNIP2($chat_id){
+        $chat_id = Login::cifradoCHATID($chat_id);
     	$nip = self::NIP();
     	$id = self::select('cuenta.id as id')
     				->where([
@@ -178,6 +180,7 @@ class Login extends Model
     }
 
     public static function validarChatID($chat_id){
+        $chat_id = Login::cifradoCHATID($chat_id);
         $validacion = self::select('cuenta.chat_id as chat_id')
                     ->where([
                         ['cuenta.chat_id','=',$chat_id]
@@ -220,6 +223,7 @@ class Login extends Model
     }
 
     public static function vincularTelegram($correo,$chat_id,$nip){
+        $chat_id = Login::cifradoCHATID($chat_id);
         $cuenta = self::select('cuenta.id')
                     ->where([
                         ['cuenta.correo','=',$correo]
@@ -285,5 +289,14 @@ class Login extends Model
         }else{
             return false;
         }
+    }
+
+    public static function cifradoCHATID($chat_id){
+        $llave = env('LLAVE_CHATID');
+        $inivec = env('INIVEC_CHATID');
+        $inivec = base64_decode($inivec);
+        $chatid_en = openssl_encrypt($chat_id,'AES-256-CBC',$llave,0,$inivec);
+        $chatid_en = base64_encode($chatid_en);
+        return $chatid_en;
     }
 }

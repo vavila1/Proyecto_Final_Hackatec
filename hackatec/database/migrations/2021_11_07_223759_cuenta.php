@@ -22,7 +22,7 @@ class Cuenta extends Migration
             $table->string('time_stamp1',20)->nullable();
             $table->string('ca_2',10)->nullable();
              $table->string('time_stamp2',20)->nullable();
-            $table->Integer('chat_id')->nullable();
+            $table->string('chat_id',100)->nullable();
             $table->unsignedBigInteger('id_estatus');
             $table->foreign('id_estatus')->references('id')->on('estatus');
             $table->unsignedBigInteger('id_usuario');
