@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Usuario;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Carbon;
 
 class Login extends Model
 {
@@ -66,7 +67,7 @@ class Login extends Model
     }
 
     public static function verificarNIP2($NIP,$correo){
-    	$nip = self::select('cuenta.ca_2 as ca_2')
+    	$nip = self::select('cuenta.ca_2 as ca_2','cuenta.time_stamp2 as timestamp')
     				->where([
     					['cuenta.correo','=',$correo]
     				])
@@ -75,8 +76,12 @@ class Login extends Model
     	if($nip==null){
     		return 'false';
     	}
+        $timestamp = $nip[0]['timestamp'];
+        $timestamp = strtotime($timestamp);
+        $diferencia = Carbon::createFromTimestamp($timestamp);
+        $diferencia = $diferencia->diffInSeconds();
     	$nip = $nip[0]['ca_2'];
-    	if($nip == $NIP){
+    	if($nip == $NIP && $diferencia<180){
     		return 'true';
     	}else{
     		return 'false';
@@ -84,7 +89,7 @@ class Login extends Model
     }
     public static function verificarNIP1($NIP,$chat_id){
         $chat_id = Login::cifradoCHATID($chat_id);
-    	$nip = self::select('cuenta.ca_1 as ca_1')
+    	$nip = self::select('cuenta.ca_1 as ca_1','cuenta.time_stamp1 as timestamp')
     				->where([
     					['cuenta.chat_id','=',$chat_id]
     				])
@@ -93,8 +98,12 @@ class Login extends Model
     	if($nip==null){
     		return 'false';
     	}
+        $timestamp = $nip[0]['timestamp'];
+        $timestamp = strtotime($timestamp);
+        $diferencia = Carbon::createFromTimestamp($timestamp);
+        $diferencia = $diferencia->diffInSeconds();
     	$nip = $nip[0]['ca_1'];
-    	if($nip == $NIP){
+    	if($nip == $NIP && $diferencia<180){
     		return 'true';
     	}else{
     		return 'false';
@@ -102,6 +111,7 @@ class Login extends Model
     }
 
     public static function modificarNIP2($chat_id){
+        $timestamp = now()->format('Y-m-d H:i:s');
         $chat_id = Login::cifradoCHATID($chat_id);
     	$nip = self::NIP();
     	$id = self::select('cuenta.id as id')
@@ -113,6 +123,7 @@ class Login extends Model
     	$id = $id[0]['id'];
     	$datos = self::find($id);
     	$datos->ca_2 = $nip;
+        $datos->time_stamp2 = $timestamp;
     	$datos->save();
     	if($datos->save()){
     		return $nip;
@@ -141,6 +152,7 @@ class Login extends Model
         }
     }
     public static function modificarNIP1($correo){
+        $timestamp = now()->format('Y-m-d H:i:s');
         $nip = self::NIP();
         $id = self::select('cuenta.id as id')
                     ->where([
@@ -151,6 +163,7 @@ class Login extends Model
         $id = $id[0]['id'];
         $datos = self::find($id);
         $datos->ca_1 = $nip;
+        $datos->time_stamp1 = $timestamp;
         $datos->save();
         if($datos->save()){
             return $nip;
@@ -171,6 +184,8 @@ class Login extends Model
         $datos = self::find($id);
         $datos->ca_1 = null;
         $datos->ca_2 = null;
+        $datos->time_stamp1 = null;
+        $datos->time_stamp2 = null;
         $datos->save();
         if($datos->save()){
             return 'true';
